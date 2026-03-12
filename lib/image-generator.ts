@@ -35,7 +35,7 @@ export async function generateCardImage(fullName: string): Promise<Buffer> {
     const templatePath = path.join(projectRoot, activeTemplate.templatePath);
     const fontPath = path.join(projectRoot, activeTemplate.fontPath);
 
-    const [templateBuffer, fontBuffer] = await Promise.all([
+    const [templateBuffer] = await Promise.all([
         loadTemplateBuffer(templatePath),
         fs.readFile(fontPath),
     ]);
@@ -67,35 +67,20 @@ export async function generateCardImage(fullName: string): Promise<Buffer> {
         throw new Error("الاسم أطول من المساحة المخصصة على البطاقة.");
     }
 
-    const fontBase64 = fontBuffer.toString("base64");
-    const centeredNameSvg = `
-        <svg width="${Math.round(innerWidth)}" height="${Math.round(innerHeight)}" viewBox="0 0 ${Math.round(innerWidth)} ${Math.round(innerHeight)}" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <style>
-                    @font-face {
-                        font-family: "CardNameFont";
-                        src: url("data:font/ttf;base64,${fontBase64}") format("truetype-variations"),
-                             url("data:font/ttf;base64,${fontBase64}") format("truetype");
-                    }
-
-                    text {
-                        font-family: "CardNameFont", "Cairo", sans-serif;
-                        font-size: ${fontSize}px;
-                        font-weight: 700;
-                        fill: ${textBox.textColor};
-                        text-anchor: middle;
-                        dominant-baseline: middle;
-                        direction: rtl;
-                        unicode-bidi: plaintext;
-                    }
-                </style>
-            </defs>
-            <text x="50%" y="50%">${escapeXml(fullName)}</text>
-        </svg>
-    `;
+    const centeredRtlName = `&#x200F;${escapeXml(fullName)}&#x200F;`;
 
     const textLayer = {
-        input: Buffer.from(centeredNameSvg),
+        input: {
+            text: {
+                text: `<span foreground="${textBox.textColor}" font_family="${textBox.fontFamily}" font_weight="700" lang="ar">${centeredRtlName}</span>`,
+                rgba: true,
+                width: Math.round(innerWidth),
+                height: Math.round(innerHeight),
+                align: "center" as const,
+                font: `${textBox.fontFamily} ${fontSize}`,
+                fontfile: fontPath,
+            },
+        },
         left: Math.round(innerX + offsetX),
         top: Math.round(innerY + offsetY),
     };

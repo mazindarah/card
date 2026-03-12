@@ -65,18 +65,25 @@ export function CardPreview({ imageUrl, fullName, onReset }: CardPreviewProps) {
       </div>
 
       {/* إطار البطاقة الاحترافي */}
-      <div className="relative w-full max-w-75">
-        {/* هالة خارجية */}
-        <div className="absolute -inset-0.75 rounded-[20px] bg-linear-to-b from-[#d4b86a] via-[#b79d56]/60 to-[#8c7438] opacity-70" />
+      <div className="relative w-full max-w-75 animate-[cardReveal_.85s_cubic-bezier(.21,.95,.27,1)_both]">
+        {/* هالة خارجية متحركة */}
+        <div className="absolute -inset-0.75 rounded-[20px] bg-linear-to-b from-[#d4b86a] via-[#b79d56]/60 to-[#8c7438] opacity-70 animate-[luxeGlow_3.8s_ease-in-out_infinite]" />
+        {/* وهج احتفالي خفيف */}
+        <div className="pointer-events-none absolute -inset-4 opacity-65 [background:radial-gradient(circle_at_18%_25%,rgba(255,230,150,.34)_0%,transparent_45%),radial-gradient(circle_at_82%_15%,rgba(255,255,255,.22)_0%,transparent_38%)] animate-[festivePulse_4.2s_ease-in-out_infinite]" />
         {/* الصورة */}
         <div className="relative overflow-hidden rounded-[18px] shadow-[0_24px_56px_-12px_rgba(80,60,15,.55)]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={imageUrl}
             alt={`معاينة بطاقة ${safeName}`}
-            className="block h-auto w-full"
+            className="block h-auto w-full animate-[cardFloat_5.5s_ease-in-out_infinite]"
             loading="lazy"
           />
+
+          {/* لمعة تمر فوق الصورة */}
+          <div className="pointer-events-none absolute inset-0 overflow-hidden">
+            <div className="absolute -left-[45%] top-0 h-full w-[38%] -skew-x-12 bg-linear-to-r from-transparent via-white/24 to-transparent animate-[shineSweep_3.8s_ease-in-out_infinite]" />
+          </div>
         </div>
       </div>
 
