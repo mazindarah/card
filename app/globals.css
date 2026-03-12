@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+:root {
+  --surface-0: #f6f1e3;
+  --surface-1: #ffffff;
+  --text-strong: #2f2a1f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  color: var(--text-strong);
+  font-family: var(--font-ui-arabic), "Noto Kufi Arabic", sans-serif;
+}
+
+::selection {
+  background: #c8b072;
+  color: #211b0d;
+}
