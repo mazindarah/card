@@ -38,7 +38,7 @@ function estimateGlyphFactor(char: string): number {
     return 0.5;
 }
 
-function estimateTextWidth(text: string, fontSize: number): number {
+export function estimateTextWidth(text: string, fontSize: number): number {
     let units = 0;
     for (const char of text) {
         units += estimateGlyphFactor(char);

@@ -2,7 +2,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import sharp from "sharp";
 import { activeTemplate } from "@/config/card-template";
-import { computeBestFontSize } from "@/lib/text-layout";
+import { computeBestFontSize, estimateTextWidth } from "@/lib/text-layout";
 
 function escapeXml(text: string): string {
     return text
@@ -67,6 +67,17 @@ export async function generateCardImage(fullName: string): Promise<Buffer> {
         throw new Error("الاسم أطول من المساحة المخصصة على البطاقة.");
     }
 
+    // Pango center alignment with a single RTL line can drift visually,
+    // so we compute a horizontal offset to keep short names centered.
+    const estimatedNameWidth = Math.min(innerWidth, estimateTextWidth(fullName, fontSize));
+
+    let horizontalOffset = 0;
+    if (textBox.textAlign === "center") {
+        horizontalOffset = (innerWidth - estimatedNameWidth) / 2;
+    } else if (textBox.textAlign === "right") {
+        horizontalOffset = innerWidth - estimatedNameWidth;
+    }
+
     const centeredRtlName = `&#x200F;${escapeXml(fullName)}&#x200F;`;
 
     const textLayer = {
@@ -76,12 +87,12 @@ export async function generateCardImage(fullName: string): Promise<Buffer> {
                 rgba: true,
                 width: Math.round(innerWidth),
                 height: Math.round(innerHeight),
-                align: "center" as const,
+                align: "left" as const,
                 font: `${textBox.fontFamily} ${fontSize}`,
                 fontfile: fontPath,
             },
         },
-        left: Math.round(innerX + offsetX),
+        left: Math.round(innerX + offsetX + horizontalOffset),
         top: Math.round(innerY + offsetY),
     };
 
