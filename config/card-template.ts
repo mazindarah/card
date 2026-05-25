@@ -36,7 +36,7 @@ export const cardTemplates: Record<CardTemplateConfig["key"], CardTemplateConfig
         width: 1080,
         height: 1920,
         textBox: {
-            x: 530,
+            x: 510,
             y: 1632,
             width: 520,
             height: 74,
